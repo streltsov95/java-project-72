@@ -1,9 +1,9 @@
 plugins {
-    id("java")
     checkstyle
     jacoco
     id("se.patrikerdes.use-latest-versions") version "0.2.18"
     id("com.github.ben-manes.versions") version "0.51.0"
+    application
 }
 
 group = "hexlet.code"
@@ -18,6 +18,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("io.javalin:javalin:6.4.0")
     implementation("org.slf4j:slf4j-simple:2.0.16")
+}
+
+application {
+    mainClass = "hexlet.code.App"
 }
 
 tasks.test {
