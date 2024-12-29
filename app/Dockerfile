@@ -2,7 +2,7 @@ FROM eclipse-temurin:21-jdk
 
 WORKDIR ./app
 
-COPY src src
+COPY ./app ./app
 
 RUN gradle installDist
 
