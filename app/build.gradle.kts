@@ -4,6 +4,7 @@ plugins {
     id("se.patrikerdes.use-latest-versions") version "0.2.18"
     id("com.github.ben-manes.versions") version "0.51.0"
     application
+    id("com.gradleup.shadow") version "9.0.0-beta4"
 }
 
 group = "hexlet.code"
