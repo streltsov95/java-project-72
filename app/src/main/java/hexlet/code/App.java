@@ -2,6 +2,7 @@ package hexlet.code;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import hexlet.code.repository.BaseRepository;
 import io.javalin.Javalin;
 
 public class App {
@@ -11,6 +12,7 @@ public class App {
         hikariConfig.setJdbcUrl(getJdbcUrl());
 
         HikariDataSource hikariDataSource = new HikariDataSource(hikariConfig);
+        BaseRepository.dataSource = hikariDataSource;
 
         Javalin app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
