@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := build-run
 
 setup:
-	./gradlew wrapper --gradle-version 8.7
+	./gradlew wrapper --gradle-version 8.5
 
 clean:
 	./gradlew clean
@@ -26,7 +26,5 @@ checkstyleMain:
 
 check-deps:
 	./gradlew dependencyUpdates -Drevision=release
-
-build-run: build run
 
 .PHONY: build
