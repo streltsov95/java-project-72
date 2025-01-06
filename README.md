@@ -5,4 +5,4 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/92baeb9d8d78d51ccf2f/maintainability)](https://codeclimate.com/github/streltsov95/java-project-72/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/92baeb9d8d78d51ccf2f/test_coverage)](https://codeclimate.com/github/streltsov95/java-project-72/test_coverage)
 
-[Link to application](https://java-project-72-m3sl.onrender.com)
+[Link to application](https://java-project-72-5mxl.onrender.com)
