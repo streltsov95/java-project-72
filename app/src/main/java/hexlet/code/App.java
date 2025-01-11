@@ -6,6 +6,7 @@ import hexlet.code.repository.BaseRepository;
 import io.javalin.Javalin;
 
 import hexlet.code.util.Util;
+import io.javalin.rendering.template.JavalinJte;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -33,6 +34,7 @@ public class App {
 
         Javalin app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
+            config.fileRenderer(new JavalinJte(Util.createTemplateEngine()));
         });
 
         app.get("/", ctx -> ctx.result("Hello World"));
