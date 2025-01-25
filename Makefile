@@ -2,7 +2,7 @@ build:
 	make -C app build
 
 install:
-    make -C app install
+	make -C app install
 
 test:
 	make -C app test
