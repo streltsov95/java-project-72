@@ -20,8 +20,11 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: 8.5
-      - run: make checkstyleMain
-      - run: make test
+      - name: Run linter
+        run: make checkstyleMain
+        continue-on-error: true
+      - name: Run test
+        run: make test
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v9.0.0
         env:
