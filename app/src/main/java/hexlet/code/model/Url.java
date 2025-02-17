@@ -1,6 +1,8 @@
 package hexlet.code.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Url {
     private int id;
@@ -33,5 +35,11 @@ public class Url {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getParsedCreatedAt() {
+        LocalDateTime createdAt = getCreatedAt().toLocalDateTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        return createdAt.format(formatter);
     }
 }
