@@ -19,6 +19,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core:3.27.3")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+
     implementation("io.javalin:javalin:6.4.0")
     implementation("org.slf4j:slf4j-simple:2.0.16")
     implementation ("com.zaxxer:HikariCP:6.2.1")
@@ -27,6 +28,8 @@ dependencies {
     implementation("gg.jte:jte:3.1.15")
     implementation("io.javalin:javalin-rendering:6.4.0")
     implementation("io.javalin:javalin-bundle:6.4.0")
+
+    compileOnly("com.konghq:unirest-java-core:4.4.5")
 }
 
 application {
