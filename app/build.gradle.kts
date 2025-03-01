@@ -28,6 +28,7 @@ dependencies {
     implementation("gg.jte:jte:3.1.15")
     implementation("io.javalin:javalin-rendering:6.4.0")
     implementation("io.javalin:javalin-bundle:6.4.0")
+    implementation("org.jsoup:jsoup:1.18.3")
 
     compileOnly("com.konghq:unirest-java-core:4.4.5")
 }
