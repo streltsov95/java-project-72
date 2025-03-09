@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class Util {
 
     public static String readResourceFile(String fileName) throws IOException {
-        InputStream inputStream = Optional.of(App.class.getClassLoader().getResourceAsStream(fileName))
+        InputStream inputStream = Optional.ofNullable(App.class.getClassLoader().getResourceAsStream(fileName))
                 .orElseThrow(() -> new FileNotFoundException("Resource file not found: " + fileName));
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
