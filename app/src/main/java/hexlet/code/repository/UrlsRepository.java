@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class UrlsRepository extends BaseRepository {
 
-    public static void save (Url url) throws SQLException {
+    public static void save(Url url) throws SQLException {
         String sql = "INSERT INTO urls (name, created_at) VALUES (?, ?)";
         try (var connection = dataSource.getConnection();
                 var preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -27,7 +27,7 @@ public class UrlsRepository extends BaseRepository {
         }
     }
 
-    public static List<Url> getEntities() throws SQLException{
+    public static List<Url> getEntities() throws SQLException {
         String sql = "SELECT * FROM urls";
         try (var connection = dataSource.getConnection();
                 var preparedStatement = connection.prepareStatement(sql)) {
@@ -46,7 +46,7 @@ public class UrlsRepository extends BaseRepository {
         }
     }
 
-    public static boolean existsByName(String name) throws SQLException{
+    public static boolean existsByName(String name) throws SQLException {
         return getEntities().stream()
                 .anyMatch(url -> url.getName().equals(name));
     }

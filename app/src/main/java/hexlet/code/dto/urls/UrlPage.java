@@ -6,7 +6,7 @@ import hexlet.code.model.Url;
 public class UrlPage extends BasePage {
     private Url url;
 
-    public UrlPage (Url url) {
+    public UrlPage(Url url) {
         this.url = url;
     }
 
