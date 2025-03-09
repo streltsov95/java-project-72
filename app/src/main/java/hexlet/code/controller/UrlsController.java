@@ -3,6 +3,7 @@ package hexlet.code.controller;
 import hexlet.code.dto.urls.UrlPage;
 import hexlet.code.dto.urls.UrlsPage;
 import hexlet.code.model.Url;
+import hexlet.code.repository.UrlChecksRepository;
 import hexlet.code.repository.UrlsRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
@@ -54,12 +55,18 @@ public class UrlsController {
         var id = ctx.pathParamAsClass("id", Integer.class).get();
         var url = UrlsRepository.find(id)
                 .orElseThrow(() -> new NotFoundResponse("Url with id = " + id + " not found"));
+        url.setUrlChecks(UrlChecksRepository.getEntities(id));
         var page = new UrlPage(url);
+        page.setFlash(ctx.consumeSessionAttribute("flash"));
+        page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
         ctx.render("urls/show.jte", model("page", page));
     }
 
     public static void index(Context ctx) throws SQLException {
         var urls = UrlsRepository.getEntities();
+        for (var url : urls) {
+            url.setUrlChecks(UrlChecksRepository.getEntities(url.getId()));
+        }
         var page = new UrlsPage(urls);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));

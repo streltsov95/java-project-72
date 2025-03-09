@@ -1,5 +1,6 @@
 @import hexlet.code.util.NamedRoutes
 @import hexlet.code.dto.urls.UrlPage
+@import hexlet.code.model.Url
 @param UrlPage page
 
 @template.layout.page(
@@ -20,13 +21,13 @@
                 </tr>
                 <tr>
                     <td>Дата создания</td>
-                    <td>${page.getUrl().getParsedCreatedAt()}</td>
+                    <td>${Url.getParsedCreatedAt(page.getUrl().getCreatedAt())}</td>
                 </tr>
                 </tbody>
             </table>
 
             <h2 class="mt-5">Проверки</h2>
-            <form method="post" action="${NamedRoutes.urlPath(page.getUrl().getId())}/checks">
+            <form method="post" action="${NamedRoutes.urlCheckPath(page.getUrl().getId())}">
                 <button type="submit" class="btn btn-primary">Запустить проверку</button>
             </form>
 
@@ -40,7 +41,30 @@
                 <th class="col-2">Дата проверки</th>
                 </thead>
                 <tbody>
-
+                @if(!page.getUrl().getUrlChecks().isEmpty())
+                    @for(var urlCheck : page.getUrl().getUrlChecks())
+                        <tr>
+                            <td>
+                                ${urlCheck.getId()}
+                            </td>
+                            <td>
+                                ${urlCheck.getStatusCode()}
+                            </td>
+                            <td>
+                                ${urlCheck.getTitle()}
+                            </td>
+                            <td>
+                                ${urlCheck.getH1()}
+                            </td>
+                            <td>
+                                ${urlCheck.getDescription()}
+                            </td>
+                            <td>
+                                ${Url.getParsedCreatedAt(urlCheck.getCreatedAt())}
+                            </td>
+                        </tr>
+                    @endfor
+                @endif
                 </tbody>
             </table>
         </div>
