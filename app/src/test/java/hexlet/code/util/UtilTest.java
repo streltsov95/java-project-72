@@ -2,6 +2,7 @@ package hexlet.code.util;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,11 +26,9 @@ class UtilTest {
     }
 
     @Test
-    void testReadNonExistFile() throws IOException {
+    void testReadNonExistFile() {
         String nonExistFile = "non-exist-file.txt";
-        Exception exception = assertThrows(IOException.class, () -> {
-            Util.readResourceFile(nonExistFile);
-        });
+        Exception exception = assertThrows(FileNotFoundException.class, () -> Util.readResourceFile(nonExistFile));
         String expectedMessage = "Resource file not found: " + nonExistFile;
 
         assertEquals(expectedMessage, exception.getMessage());
