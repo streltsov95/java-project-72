@@ -11,6 +11,7 @@ import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,37 +21,26 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 class AppTest {
 
-//     Подсказки по поиску в чате:
-//      1. выполняем запрос на сервис (app)
-//      2. Проверяем, что в ответ вернулось то, что мы ожидали
-//      3. Проверяем, что не только ответ совпадает, но и действительно в базе изменения применились. Сделать это можно обратившись к бд напрямую, а не через наш сервис
-//
-//      UrlTest.testIndex
-//      UrlTest.testShow
-//      UrlTest.testCreate
-//
-//      UrlCheckTest.testCreate
-//
-//      Для интеграционных тестов характерны запросы в БД(H2/Derby)
-//      Тесты на заглушках(моках) - модульные unit тесты
+    private static Path getFixturePath(String fileName) {
+        return Path.of("src", "test", "resources", "fixtures", fileName)
+                .toAbsolutePath().normalize();
+    }
 
+    private static String readFixture(String fileName) throws IOException {
+        Path path = getFixturePath(fileName);
+        return Files.readString(path).trim();
+    }
 
-//    private static Path getFixturePath(String fileName) {
-//        return Path.of("src", "test", "resources", "fixtures", fileName)
-//                .toAbsolutePath().normalize();
-//    }
-//
-//    private static String readFixture(String fileName) throws IOException {
-//        Path path = getFixturePath(fileName);
-//        return Files.readString(path).trim();
-//    }
-
-    private Javalin app;
+    private static Javalin app; //static - иначе создается новый экз.-р для каждого теста
+    private static MockWebServer mockServer;
+    private static String testUrlName;
 
     private static Map<String, Object> getUrlByName(HikariDataSource dataSource, String url) throws SQLException {
         Map<String, Object> result = new HashMap<>();
@@ -69,18 +59,18 @@ class AppTest {
         }
     }
 
+    @BeforeAll
+    public static void beforeAll() throws IOException {
+        mockServer = new MockWebServer();
+        mockServer.enqueue(new MockResponse().setBody(readFixture("index.jte")));
+        testUrlName = mockServer.url("/").toString();
+//        mockServer.start();
+    }
 
-//    @BeforeAll
-//    public static void beforeAll() throws IOException {
-//        try (MockWebServer mockServer = new MockWebServer()) {
-//            mockServer.enqueue(new MockResponse().setBody(readFixture("index.jte")));
-//            mockServer.enqueue(new MockResponse().setBody(readFixture("urls/index.jte")));
-//            mockServer.enqueue(new MockResponse().setBody(readFixture("index-bad-flash.jte")));
-//            mockServer.enqueue(new MockResponse().setBody(readFixture("urls/show.jte")));
-//            mockServer.start();
-//        }
-//
-//    }
+    @AfterAll
+    public static void afterAll() throws IOException {
+        mockServer.close();
+    }
 
 
     @BeforeEach
@@ -108,9 +98,8 @@ class AppTest {
         });
     }
 
-//     Почему при редиректе на главную старницу после неудачной попытки добавить урл в html не отрисовывается флэш,
-//     следовательно такое исполнение теста не работает?
-
+//     Почему при редиректе на главную старницу после неудачной попытки добавить урл в html не отрисовывается флэш?
+//     такое исполнение теста не верно, почему?
 //    @Test
 //    public void testCreateNonValidUrl() {
 //        JavalinTest.test(app, (server, client) -> {
@@ -121,7 +110,6 @@ class AppTest {
 //        });
 //    }
 
-
     @Test
     public void testShow() {
         JavalinTest.test(app, (server, client) -> {
@@ -131,6 +119,22 @@ class AppTest {
             response = client.get(NamedRoutes.urlPath(existingUrl.get("id").toString()));
             assertThat(response.code()).isEqualTo(200);
             assertThat(response.body().string()).contains(existingUrl.get("name").toString());
+        });
+    }
+
+    @Test
+    public void testUrlCheckCreate() {
+        JavalinTest.test(app, (server, client) -> {
+            var url = new Url(testUrlName);
+            url.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+            UrlsRepository.save(url);
+            var response = client.post(NamedRoutes.urlCheckPath(url.getId()));
+            assertThat(response.code()).isEqualTo(200);
+            assertThat(response.body().string()).contains(
+                    "A Sample HTML Document (Test File)",
+                    "A blank HTML document for testing purposes.",
+                    "A Sample HTML Document with h1 tag (Test File)"
+            );
         });
     }
 }
