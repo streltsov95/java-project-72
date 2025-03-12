@@ -14,8 +14,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 public class UrlCheckController {
     public static void check(Context ctx) throws SQLException {
@@ -37,8 +35,7 @@ public class UrlCheckController {
         String title = parsedBody.title();
         String h1 = parsedBody.select("h1").text();
         String description = parsedBody.select("meta[name=description]").attr("content");
-        Timestamp createdAt = Timestamp.valueOf(LocalDateTime.now());
-        UrlCheck urlCheck = new UrlCheck(statusCode, title, h1, description, id, createdAt);
+        UrlCheck urlCheck = new UrlCheck(statusCode, title, h1, description, id);
         UrlChecksRepository.save(urlCheck);
         ctx.sessionAttribute("flash", "Страница успешно проверена");
         ctx.sessionAttribute("flash-type", "success");
