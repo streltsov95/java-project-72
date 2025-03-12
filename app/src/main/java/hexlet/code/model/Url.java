@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class Url {
+public final class Url {
     private int id;
     private String name;
     private Timestamp createdAt;

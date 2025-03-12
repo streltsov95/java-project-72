@@ -2,7 +2,7 @@ package hexlet.code.model;
 
 import java.sql.Timestamp;
 
-public class UrlCheck {
+public final class UrlCheck {
     private int id;
     private int statusCode;
     private String title;
