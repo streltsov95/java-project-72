@@ -5,6 +5,8 @@ import hexlet.code.model.Url;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +18,7 @@ public class UrlsRepository extends BaseRepository {
         try (var connection = dataSource.getConnection();
                 var preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, url.getName());
-            preparedStatement.setTimestamp(2, url.getCreatedAt());
+            preparedStatement.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
             preparedStatement.executeUpdate();
             var generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -59,6 +61,24 @@ public class UrlsRepository extends BaseRepository {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 var name = resultSet.getString("name");
+                var createdAt = resultSet.getTimestamp("created_at");
+                var url = new Url(name);
+                url.setId(id);
+                url.setCreatedAt(createdAt);
+                return Optional.of(url);
+            }
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<Url> findUrlByName(String name) throws SQLException {
+        String sql = "SELECT * FROM urls WHERE name = ?";
+        try (var connection = dataSource.getConnection();
+             var preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                var id = resultSet.getInt("id");
                 var createdAt = resultSet.getTimestamp("created_at");
                 var url = new Url(name);
                 url.setId(id);

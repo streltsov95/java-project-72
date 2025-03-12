@@ -11,8 +11,6 @@ import io.javalin.http.NotFoundResponse;
 import java.net.URI;
 import java.net.URL;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
@@ -40,7 +38,6 @@ public class UrlsController {
                 .toLowerCase();
         if (!UrlsRepository.existsByName(normalizedUrl)) {
             Url url = new Url(normalizedUrl);
-            url.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
             UrlsRepository.save(url);
             ctx.sessionAttribute("flash", "Страница успешно добавлена");
             ctx.sessionAttribute("flash-type", "success");
