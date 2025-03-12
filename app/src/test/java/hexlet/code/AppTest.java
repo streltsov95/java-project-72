@@ -1,10 +1,12 @@
 package hexlet.code;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zaxxer.hikari.HikariDataSource;
 import hexlet.code.model.Url;
-import hexlet.code.repository.BaseRepository;
+import hexlet.code.repository.UrlChecksRepository;
 import hexlet.code.repository.UrlsRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
@@ -21,9 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 class AppTest {
@@ -82,6 +83,7 @@ class AppTest {
     public void testMainPage() {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get(NamedRoutes.rootPath());
+
             assertThat(response.code()).isEqualTo(200);
             assertThat(response.body().string()).contains("Бесплатно проверяйте сайты");
         });
@@ -92,14 +94,16 @@ class AppTest {
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=https://www.example.com:5654/adad/asdasdd/gdfg/12";
             var response = client.post(NamedRoutes.urlsPath(), requestBody);
-            var existingUrl = getUrlByName(BaseRepository.dataSource, "https://www.example.com:5654");
+            var url = UrlsRepository.findUrlByName("https://www.example.com:5654");
+
             assertThat(response.code()).isEqualTo(200);
-            assertThat(response.body().string()).contains(existingUrl.get("name").toString());
+            assertTrue(url.isPresent());
+            assertThat(response.body().string()).contains(url.get().getName());
         });
     }
 
-//     Почему при редиректе на главную старницу после неудачной попытки добавить урл в html не отрисовывается флэш?
-//     такое исполнение теста не верно, почему?
+//     JavalinTest не хранит данные сессии, поэтому с его помощью не получается проверить флеш сообщения.
+//     Можно сделать отдельный тест и там использовать что-нибудь типа Unirest, слать реальные запросы в приложение
 //    @Test
 //    public void testCreateNonValidUrl() {
 //        JavalinTest.test(app, (server, client) -> {
@@ -115,10 +119,11 @@ class AppTest {
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=https://www.example.com:5654/adad/asdasdd/gdfg/12";
             var response = client.post(NamedRoutes.urlsPath(), requestBody);
-            var existingUrl = getUrlByName(BaseRepository.dataSource, "https://www.example.com:5654");
-            response = client.get(NamedRoutes.urlPath(existingUrl.get("id").toString()));
+            var url = UrlsRepository.findUrlByName("https://www.example.com:5654");
+            response = client.get(NamedRoutes.urlPath(url.get().getId()));
+
             assertThat(response.code()).isEqualTo(200);
-            assertThat(response.body().string()).contains(existingUrl.get("name").toString());
+            assertThat(response.body().string()).contains(url.get().getName());
         });
     }
 
@@ -126,10 +131,13 @@ class AppTest {
     public void testUrlCheckCreate() {
         JavalinTest.test(app, (server, client) -> {
             var url = new Url(testUrlName);
-            url.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
             UrlsRepository.save(url);
             var response = client.post(NamedRoutes.urlCheckPath(url.getId()));
+            var actualCheck = UrlChecksRepository.getEntities(url.getId());
+            var expectedCheck = List.copyOf(actualCheck);
+
             assertThat(response.code()).isEqualTo(200);
+            assertEquals(expectedCheck, actualCheck);
             assertThat(response.body().string()).contains(
                     "A Sample HTML Document (Test File)",
                     "A blank HTML document for testing purposes.",
