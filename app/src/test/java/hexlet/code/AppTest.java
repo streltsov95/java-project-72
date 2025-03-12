@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 class AppTest {
+    private static Javalin app; //static - иначе создается новый экз.-р для каждого теста
+    private static MockWebServer mockServer;
+    private static String testUrlName;
 
     private static Path getFixturePath(String fileName) {
         return Path.of("src", "test", "resources", "fixtures", fileName)
@@ -37,27 +40,6 @@ class AppTest {
     private static String readFixture(String fileName) throws IOException {
         Path path = getFixturePath(fileName);
         return Files.readString(path).trim();
-    }
-
-    private static Javalin app; //static - иначе создается новый экз.-р для каждого теста
-    private static MockWebServer mockServer;
-    private static String testUrlName;
-
-    private static Map<String, Object> getUrlByName(HikariDataSource dataSource, String url) throws SQLException {
-        Map<String, Object> result = new HashMap<>();
-        String sql = "SELECT * FROM urls WHERE name = ?";
-        try (var connection = dataSource.getConnection();
-             var preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, url);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                result.put("id", resultSet.getInt("id"));
-                result.put("name", resultSet.getString("name"));
-            }
-
-            return result;
-        }
     }
 
     @BeforeAll
