@@ -29,7 +29,8 @@ dependencies {
     implementation("io.javalin:javalin-rendering:6.4.0")
     implementation("io.javalin:javalin-bundle:6.4.0")
     implementation("org.jsoup:jsoup:1.18.3")
-
+    compileOnly("org.projectlombok:lombok:1.18.36")
+    annotationProcessor("org.projectlombok:lombok:1.18.36")
     implementation("com.konghq:unirest-java-core:4.4.5")
 }
 
