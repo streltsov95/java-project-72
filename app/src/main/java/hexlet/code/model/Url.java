@@ -1,5 +1,8 @@
 package hexlet.code.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -8,6 +11,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+@Getter
+@Setter
 public final class Url {
     private int id;
     private String name;
@@ -16,38 +21,6 @@ public final class Url {
 
     public Url(String name) {
         this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUrlChecks(List<UrlCheck> urlChecks) {
-        this.urlChecks = urlChecks;
-    }
-
-    public List<UrlCheck> getUrlChecks() {
-        return urlChecks;
     }
 
     public Optional<UrlCheck> getLatestUrlCheck() {
