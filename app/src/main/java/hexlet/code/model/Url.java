@@ -23,18 +23,18 @@ public final class Url {
         this.name = name;
     }
 
-    public Optional<UrlCheck> getLatestUrlCheck() {
-        if (!getUrlChecks().isEmpty()) {
-            return getUrlChecks().stream()
-                    .sorted(Comparator.comparing(UrlCheck::getCreatedAt))
-                    .reduce((e1, e2) -> e2);
-        }
-        return Optional.empty();
-    }
+//    public Optional<UrlCheck> getLatestUrlCheck() {
+//        if (!getUrlChecks().isEmpty()) {
+//            return getUrlChecks().stream()
+//                    .sorted(Comparator.comparing(UrlCheck::getCreatedAt))
+//                    .reduce((e1, e2) -> e2);
+//        }
+//        return Optional.empty();
+//    }
 
-    public static String getParsedCreatedAt(Timestamp createdAt) {
-        LocalDateTime parsedCreatedAt = createdAt.toLocalDateTime();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        return parsedCreatedAt.format(formatter);
-    }
+//    public static String getParsedCreatedAt(Timestamp createdAt) {
+//        LocalDateTime parsedCreatedAt = createdAt.toLocalDateTime();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+//        return parsedCreatedAt.format(formatter);
+//    }
 }

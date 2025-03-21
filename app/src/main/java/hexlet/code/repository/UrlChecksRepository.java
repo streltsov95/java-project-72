@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UrlChecksRepository extends BaseRepository {
 
@@ -55,4 +56,30 @@ public class UrlChecksRepository extends BaseRepository {
             return entities;
         }
     }
+
+    public static Optional<UrlCheck> getLatestUrlCheck(int urlId) throws SQLException {
+        var sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY created_at DESC";
+        try (var connection = dataSource.getConnection();
+                var preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, urlId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                var statusCode = resultSet.getInt("status_code");
+                var title = resultSet.getString("title");
+                var h1 = resultSet.getString("h1");
+                var description = resultSet.getString("description");
+                var id = resultSet.getInt("id");
+                var createdAt = resultSet.getTimestamp("created_at");
+                UrlCheck latestUrlCheck = new UrlCheck(statusCode, title, h1, description, urlId);
+                latestUrlCheck.setCreatedAt(createdAt);
+                latestUrlCheck.setId(id);
+                return Optional.of(latestUrlCheck);
+            }
+            return Optional.empty();
+        }
+    }
+
+//    public static Optional<UrlCheck> getLatestEntities() {
+//        String sql = "SELECT DISTINCT ON (url_id) * FROM url_checks ORDER BY url_id, created_at DESC";
+//    }
 }
