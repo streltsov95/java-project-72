@@ -49,8 +49,13 @@ public class UrlsRepository extends BaseRepository {
     }
 
     public static boolean existsByName(String name) throws SQLException {
-        return getEntities().stream()
-                .anyMatch(url -> url.getName().equals(name));
+        var sql = "SELECT * FROM urls WHERE name = ?";
+        try (var connection = dataSource.getConnection();
+                var preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        }
     }
 
     public static Optional<Url> find(int id) throws SQLException {
