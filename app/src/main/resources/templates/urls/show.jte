@@ -1,6 +1,6 @@
 @import hexlet.code.util.NamedRoutes
 @import hexlet.code.dto.urls.UrlPage
-@import hexlet.code.model.Url
+@import hexlet.code.util.Util
 @param UrlPage page
 
 @template.layout.page(
@@ -21,7 +21,7 @@
                 </tr>
                 <tr>
                     <td>Дата создания</td>
-                    <td>${Url.getParsedCreatedAt(page.getUrl().getCreatedAt())}</td>
+                    <td>${Util.getParsedCreatedAt(page.getUrl().getCreatedAt())}</td>
                 </tr>
                 </tbody>
             </table>
@@ -60,7 +60,7 @@
                                 ${urlCheck.getDescription()}
                             </td>
                             <td>
-                                ${Url.getParsedCreatedAt(urlCheck.getCreatedAt())}
+                                ${Util.getParsedCreatedAt(urlCheck.getCreatedAt())}
                             </td>
                         </tr>
                     @endfor
