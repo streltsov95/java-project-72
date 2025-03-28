@@ -34,8 +34,8 @@ public class UrlsRepository extends BaseRepository {
     public static List<Url> getEntities() throws SQLException {
         String sql = "SELECT * FROM urls";
         try (var connection = dataSource.getConnection();
-                var preparedStatement = connection.prepareStatement(sql)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
+                var statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(sql);
             List<Url> entities = new ArrayList<>();
             while (resultSet.next()) {
                 var id = resultSet.getInt("id");
